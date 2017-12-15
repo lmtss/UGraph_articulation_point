@@ -3,7 +3,7 @@
 
 <ul>
   <li>
-    <h2><a href="#design_and_division">设计与分工</a></h2>
+    <h2></h2>
     <ul>
       <li></li>
     </ul>
