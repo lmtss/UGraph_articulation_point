@@ -47,18 +47,32 @@ void UDGraph::InsertVertex(std::string new_vertex_name){
         num_vertex_++;
     }
 }
+
+/*
+* 删除 名为 delete_vertex_name 的顶点
+*
+*/
 void UDGraph::DeleteVertex(std::string delete_vertex_name){
     if(is_exist_vertex(delete_vertex_name)){
         DeleteVertex(delete_vertex_name, map_name_position_[delete_vertex_name]);
     }
     else ;
 }
+
+/*
+* 删除 下标为 delete_vertex_position 的顶点
+*
+*/
 void UDGraph::DeleteVertex(VertexPosition delete_vertex_position){
     if(is_exist_vertex(delete_vertex_position)){
         DeleteVertex(vertex_list_[delete_vertex_position].name, delete_vertex_position);
     }
     else ;
 }
+
+/*
+* 私有辅助函数
+*/
 void UDGraph::DeleteVertex(std::string delete_vertex_name, VertexPosition delete_vertex_position){
     vertex_list_.erase(vertex_list_.begin() + delete_vertex_position);
     map_name_position_.erase(map_name_position_.find(delete_vertex_name));
@@ -66,6 +80,11 @@ void UDGraph::DeleteVertex(std::string delete_vertex_name, VertexPosition delete
         vertex_list_[i].DeleteEdge(delete_vertex_position);
 
 }
+
+/*
+* Print()
+* 作用: 输出图, 在 DOS界面测试时使用
+*/
 void UDGraph::Print(){
     for(int i = 0; i < vertex_list_.size(); i++){
         std::cout << vertex_list_[i].name << std::endl;
@@ -77,6 +96,11 @@ void UDGraph::Print(){
         std::cout << std::endl;
     }
 }
+
+/*
+* InsertEdge(std::string vertex_name_1, std::string vertex_name_2)
+*
+*/
 void UDGraph::InsertEdge(std::string vertex_name_1, std::string vertex_name_2){
     if( (!is_exist_vertex(vertex_name_1)) || (!is_exist_vertex(vertex_name_1)));
     else {
