@@ -3,17 +3,17 @@
 
 <ul>
   <li>
-    <h2>设计与分工</h2>
-    <ul>
-      <li></li>
-    </ul>
+   <h2><a href="#design_and_division">设计与分工</a></h2>
+   <ul>
+     <li></li>
+   </ul>
   </li>
   <li>
-    <h2><a href="#style">风格约定</a></h2>
-    <ul>
-      <li>命名</li>
-      <li>缩进</li>
-    </ul>
-  </li>
+   <h2><a href="#style">风格约定</a></h2>
+   <ul>
+     <li>命名</li>
+     <li>缩进</li>
+   </ul>
+ </li>
 </ul>
 
