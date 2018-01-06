@@ -110,7 +110,7 @@ void Delete(VertexPosition position);
 ## 分工
 |赵元琪|朱明昆|陈毅凯
 |---|---|---
-|邻接表、dfs类|线性表、dfs辅助类|字符串哈希表
+|邻接表、dfs类、GUI|线性表、dfs辅助类|字符串哈希表
 ## 风格约定
 代码的风格主要参考于 [Google 开源项目风格指南](http://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/naming/)
 #### 普通变量命名
