@@ -104,12 +104,11 @@ private:
     UDGraph &graph_;
     int connected_component_;
     DfsTarjanFuZhu *FuZhu_;
-    std::string cut_vertex_, cut_edge_;
+
+    string cut_edges_, cut_vertex_;
 public:
     DfsTarjan(UDGraph &graph):graph_(graph){
         is_empty_ = true;
-        cut_vertex_ = "";
-        cut_edge_ = "";
         SetGraph(graph_);
     }
     ~DfsTarjan(){
@@ -155,23 +154,15 @@ public:
 
 
                 if(parent_[this_node_position] == -1 && num_children > 1){
+                    cout << "1:" << this_node_position << ":" << adj_vex << endl;
                     cut_vertex_ += to_string(this_node_position);
                     cut_vertex_ += ",";
-                    qDebug()<< "1:" << this_node_position << ":" << adj_vex;
-
-                    //cout << "1:" << this_node_position << ":" << adj_vex << endl;
-
                 }
                 else if(parent_[this_node_position] != -1 && low_[adj_vex] >= dfn_[this_node_position]){
+                    cout << "2:" << this_node_position << ":" << adj_vex << endl;
                     cut_vertex_ += to_string(this_node_position);
                     cut_vertex_ += ",";
-                    qDebug()<< "1:" << this_node_position << ":" << adj_vex;
-
-
-                    //cout << "2:" << this_node_position << ":" << adj_vex << endl;
-
                 }
-
             } else if(adj_vex != parent_[this_node_position]){
                 low_[this_node_position] = min(low_[this_node_position], dfn_[adj_vex]);
             }
@@ -184,38 +175,34 @@ public:
         }
     }
     void Make(){
+        cut_edges_ = "";
+        cut_vertex_ = "";
         while(graph_.num_vertex_ != traversal_order_){
             VertexPosition first_position = FuZhu_->First();
             if(first_position == -1)return;
             dfs(first_position, NULL);
             connected_component_++;
-            //qDebug() << "xh";
-
         }
 
         for(int i = 0; i < graph_.num_vertex_; i++){
-            if(low_[i] > dfn_[parent_[i]] && parent_[i]!=-1){
-                cut_edge_ += to_string(i);
-                cut_edge_ += ",";
-                cut_edge_ += to_string(parent_[i]);
-                cut_edge_ += ",";
+            if(parent_[i]!=-1){
+                if(low_[i] > dfn_[parent_[i]]){
+                    cut_edges_ += to_string(i);
+                    cut_edges_ += ",";
+                    cut_edges_ += to_string(parent_[i]);
+                    cut_edges_ += ",";
+                }
             }
-        }
-        std::cout << cut_vertex_ << "SSSSSSSs";
 
+        }
 
     }
-
-    std::string CutVertex(){
-        //qDebug() << "CutV";
+    string CutVertex(){
         return cut_vertex_;
     }
-    std::string CutEdge(){
-        //qDebug() << "CutV";
-        return cut_edge_;
+    string CutEdge(){
+        return cut_edges_;
     }
-
-
 };
 
 

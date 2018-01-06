@@ -27,6 +27,14 @@ public:
     StartWindow(QWidget *parent, int width, int height)
         : QDialog(parent)
     {
+        QFile qss("../untitled/start.qss");
+        if(qss.open(QFile::ReadOnly)){
+            QString style_sheet = QLatin1String(qss.readAll());
+            qss.close();
+            this->setStyleSheet(style_sheet);
+
+        }else;
+
 
         setWindowTitle(tr("Welcome to start window"));
         setWindowFlags(windowFlags() &~ Qt::WindowMinMaxButtonsHint);

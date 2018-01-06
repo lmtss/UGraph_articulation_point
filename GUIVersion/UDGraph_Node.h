@@ -10,8 +10,8 @@
 #define UDGRAPH_NODE_H
 
 #include<string>
-#include "graphics_vertex.h"
-#include <QDebug>
+//#include "graphics_vertex.h"
+//#include <QDebug>
 typedef int VertexPosition;
 struct Edge{
     VertexPosition adj_vex;
@@ -71,8 +71,7 @@ struct Vertex{
             if(ptr->adj_vex == pos)
                 ret++;
         }
-        if(first_edge != NULL)qDebug() << first_edge->adj_vex;
-        qDebug() << pos << "  " << ret;
+        //if(first_edge != NULL)qDebug() << first_edge->adj_vex;
         return ret;
     }
     Edge *GetOneEdge(VertexPosition pos){
@@ -84,8 +83,9 @@ struct Vertex{
         //return ret;
     }
 
-    void AddEdge(VertexPosition adj_vex){
+    void AddEdge(VertexPosition adj_vex){if(IsExistEdge(adj_vex))return;
         Edge *new_edge = new Edge(adj_vex);
+
         new_edge->next = first_edge;
         first_edge = new_edge;
 

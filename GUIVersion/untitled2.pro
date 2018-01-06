@@ -17,11 +17,16 @@ SOURCES += main.cpp
 
 HEADERS  += mainwindow.h \
     startwindow.h \
-    DfsTarjan.h \
     UDGraph.h \
     UDGraph_Node.h \
     graphics_vertex.h \
     graphics_view.h \
-    graphics_edge.h
+    graphics_edge.h \
+    HashMap.h \
+    List.h \
+    DfsTarjan.h
 
-RESOURCES +=
+RESOURCES += \
+    u2.qrc
+
+DISTFILES +=

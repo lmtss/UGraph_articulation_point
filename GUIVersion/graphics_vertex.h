@@ -23,15 +23,12 @@ protected:
     int radius_;
 
     void mousePressEvent(QGraphicsSceneMouseEvent *event){
-        //QGraphicsItem::mouseMoveEvent(event);
         setSelected(true);//qDebug() << name_ << " pressed";
         event->accept();
         emit fuck(vertex_position_);
-        //qDebug() << "fuck" << vertex_position_;
 
     }
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event){
-        //QGraphicsItem::mouseMoveEvent(event);
         //qDebug() << name_<< " moved" << pos().x() << "." << pos().y() << "  " << rect().x() << "." << rect().y();
         QPointF position = event->scenePos();
         setPos(position.x(),position.y());
@@ -41,19 +38,16 @@ protected:
         event->accept();
     }
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
-        //QGraphicsItem::mouseReleaseEvent(event);
         setSelected(false);//qDebug() << name_<< " released";
         event->accept();
 
     }
 
-
-
 public:
     GVertex(int r, int pos):QGraphicsEllipseItem(-r,-r,2*r,2*r),QObject(), vertex_position_(pos){
-        setToolTip("Fuck You!!!!");
+        //setToolTip("Fuck You!!!!");
         //setCursor(Qt::OpenHandCursor);
-        radius_ = r;
+        radius_ = r/2;
         color_ = Qt::lightGray;
         is_drag_over_ = false;
         setAcceptDrops(true);
@@ -75,11 +69,7 @@ public:
 
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
-
-
             /*painter->setPen(QPen(QColor(0, 160, 230), 2));
-
-
             painter->drawEllipse(QPointF(120, 60), 50, 20);*/
 
             // 设置画刷颜色
@@ -89,7 +79,10 @@ public:
                 painter->setBrush(QColor(255,0,0));
 
             // 绘制圆
-            painter->drawEllipse(QPointF(0, 0), 10, 10);
+            painter->drawEllipse(QPointF(0, 0), radius_, radius_);
+
+            QRectF rect(-radius_*2,-radius_*2,radius_*4,radius_*2);
+            painter->drawText(rect,Qt::AlignHCenter,name_);
     }
 
     void AddEdge(GEdge *e){
@@ -106,10 +99,8 @@ public:
                 v2->RemoveEdge(edges_[i]);
 
             }
-            //
             scene->removeItem(edges_[i]);
             delete edges_[i];
-
         }
     }
     void RemoveEdge(GEdge *e){
@@ -120,20 +111,14 @@ public:
                 break;
             }
         }
-        //for(QVector<GEdge*>::iterator it = edges_.begin())
     }
     void DeleteEdge(GVertex *v2, QGraphicsScene *scene){
         for(int i = 0; i < edges_.size(); i++){
             if(edges_[i]->vex1() == v2 || edges_[i]->vex2() == v2){
-
                 v2->RemoveEdge(edges_[i]);
-
                 scene->removeItem(edges_[i]);
-
                 delete edges_[i];
                 edges_.erase(edges_.begin() + i);
-                //qDebug() << i;
-
                 break;
             }
         }
@@ -157,11 +142,6 @@ public:
 
 signals:
     void fuck(int);
-
-    //void DeleteEdge()
-
-
-
 };
 
 #endif // GRAPHICS_VERTEX_H

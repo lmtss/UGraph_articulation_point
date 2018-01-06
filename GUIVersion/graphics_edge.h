@@ -23,15 +23,6 @@ public:
     void DesRepeat(){
         num_edge_--;
     }
-
-    /*void ChangePos(int v, int x, int y){
-        if(v == vertex_pos_1_){
-            setLine(x, y, line().x2(), line().y2());
-        }
-        else if(v == vertex_pos_2_){
-            setLine(line().x1(), line().y1(), x, y);
-        }
-    }*/
     void ChangePos(GVertex* v, int x, int y){
             if(v == vertex_1_){
                 setLine(x, y, line().x2(), line().y2());
@@ -40,37 +31,28 @@ public:
                 setLine(line().x1(), line().y1(), x, y);
             }
         }
-
-    //friend GVertex;
     int Repeat(){
         return num_edge_;
     }
     void SetCut(bool is){
         if(is_cut_ != is){
             is_cut_ = is;
-            update(line().x1(), line().y1(), line().x2(), line().y2());
+            setLine(line().x1()+1, line().y1(), line().x2(), line().y2());
+            setLine(line().x1()-1, line().y1(), line().x2(), line().y2());
         }
     }
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
-        QBrush brush;
-        if(!is_cut_)
-            brush.setColor(QColor(0,0,0));
-        else
-            brush.setColor(QColor(255,0,0));
         QPen pen;
         if(!is_cut_)
             pen.setColor(QColor(0,0,0));
         else
             pen.setColor(QColor(255,0,0));
-
-        painter->setBrush(brush);
         painter->setPen(pen);
         painter->drawLine(QPointF(line().x1(),line().y1()), QPointF(line().x2(),line().y2()));
     }
 
 private:
     int num_edge_;
-    //int vertex_pos_1_, vertex_pos_2_;
     GVertex *vertex_1_, *vertex_2_;
     bool is_cut_;
 

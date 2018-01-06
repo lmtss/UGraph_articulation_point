@@ -3,24 +3,49 @@
 
 #include<vector>
 #include<string>
-#include<map>
 #include<iostream>
 #include<fstream>
 #include "UDGraph_Node.h"
-
+#include "HashMap.h"
+#include<QDebug>
 
 class UDGraph{
 private:
     std::vector<Vertex> vertex_list_;
-    std::map<std::string, VertexPosition> map_name_position_;
+    StringHashMap<VertexPosition> map_name_position_;
+    //std::map<std::string, VertexPosition> map_name_position_;
     size_t num_vertex_, num_edge_;
 
 
-    void DeleteVertex(std::string delete_vertex_name, VertexPosition delete_vertex_position){
+    void DeleteVertex(std::string &delete_vertex_name, VertexPosition delete_vertex_position){
+        qDebug() << delete_vertex_name.c_str() << "AAA" <<map_name_position_[delete_vertex_name];
         vertex_list_.erase(vertex_list_.begin() + delete_vertex_position);
-        map_name_position_.erase(map_name_position_.find(delete_vertex_name));
-        for(int i = 0; i < vertex_list_.size(); i++)
+        for(int i = 0; i < vertex_list_.size();i++){
+            qDebug() << i << " start" << vertex_list_[i].name.c_str() << map_name_position_[vertex_list_[i].name];
+            //map_name_position_[vertex_list_[i].name]--;
+        }
+        int wh = map_name_position_[vertex_list_[delete_vertex_position].name];
+        map_name_position_.erase(delete_vertex_name);
+        /*for(int i = 0; i < vertex_list_.size();i++){
+            qDebug() << i << " start" << vertex_list_[i].name.c_str() << map_name_position_[vertex_list_[i].name];
+            //map_name_position_[vertex_list_[i].name]--;
+        }*/
+        map_name_position_[vertex_list_[delete_vertex_position].name] = wh;
+        for(int i = delete_vertex_position; i < vertex_list_.size();i++){
+            qDebug() << i << " " << vertex_list_[i].name.c_str() << map_name_position_[vertex_list_[i].name];
+            map_name_position_[vertex_list_[i].name]--;
+        }
+        for(int i = 0; i < vertex_list_.size(); i++){
             vertex_list_[i].DeleteEdge(delete_vertex_position);
+            Edge *cur_ptr = vertex_list_[i].first_edge;
+            for(; cur_ptr!=NULL; cur_ptr = cur_ptr->next){
+                if(cur_ptr->adj_vex > delete_vertex_position){
+                    cur_ptr->adj_vex--;
+                }
+            }
+        }
+
+
         num_vertex_--;
     }
 
@@ -34,7 +59,11 @@ public:
         return (pos < vertex_list_.size())?true:false;
     }
     bool is_exist_vertex(std::string name){
-        return (map_name_position_.find(name) == map_name_position_.end())?false:true;
+        return map_name_position_.is_exist(name);
+        /*if(map_name_position_.count(name) == 0)
+            return false;
+        else
+            return true;*/
     }
     int InsertVertex(std::string new_vertex_name){
         if(is_exist_vertex(new_vertex_name)){
@@ -80,9 +109,11 @@ public:
         }
     }
     Edge *InsertEdge(std::string vertex_name_1, std::string vertex_name_2){
-        if( (!is_exist_vertex(vertex_name_1)) || (!is_exist_vertex(vertex_name_1))){
+        if( (!is_exist_vertex(vertex_name_1)) || (!is_exist_vertex(vertex_name_2))){
             return NULL;
         }
+        else if(IsExistEdge(vertex_name_1,vertex_name_2))
+            return NULL;
 
         else {
             VertexPosition vertex_pos_1 = map_name_position_[vertex_name_1], vertex_pos_2 = map_name_position_[vertex_name_2];
@@ -92,6 +123,13 @@ public:
 
             return (vertex_pos_1 < vertex_pos_2)?vertex_list_[vertex_pos_1].first_edge:vertex_list_[vertex_pos_2].first_edge;
         }
+    }
+    VertexPosition Pos(std::string vertex_name){
+        if(is_exist_vertex(vertex_name)){
+            return map_name_position_[vertex_name];
+        }
+        else
+            return -1;
     }
     void Print(){
         for(int i = 0; i < vertex_list_.size(); i++){
@@ -143,15 +181,33 @@ public:
         }
     }
 
-    int IsExistEdge(std::string vertex_name_1, std::string vertex_name_2){
+    int IsExistEdge(std::string &vertex_name_1, std::string &vertex_name_2){
         if((!is_exist_vertex(vertex_name_1)) || (!is_exist_vertex(vertex_name_2))){
+            qDebug() << "d not " << vertex_name_1.c_str() << " " << vertex_name_2.c_str();
             return -1;
-        }else
+        }else{
+            qDebug() << "d yes " << vertex_name_1.c_str() << " " << vertex_name_2.c_str();
+            qDebug() << "d yes " << map_name_position_[vertex_name_1] << " " << map_name_position_[vertex_name_2];
             return vertex_list_[map_name_position_[vertex_name_1]].IsExistEdge(map_name_position_[vertex_name_2]);
+        }
+
     }
 
+    VertexPosition operator [] (std::string &vertex_name){
+        return map_name_position_[vertex_name];
+    }
+    std::string operator [] (VertexPosition pos){
+        return vertex_list_[pos].name;
+    }
+    size_t num_vex(){
+        return num_vertex_;
+    }
+    size_t num_edge(){
+        return num_edge_;
+    }
+
+
     friend class DfsTarjan;
-    friend class MainWindow;
 };
 
 #endif // UDGraph_H

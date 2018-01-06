@@ -27,7 +27,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 private:
     int window_width_, window_height_;
-    QPushButton button_create_vertex_, button_create_edge_, button_delete_edge_, button_delete_vertex_;
+    QPushButton button_create_vertex_, button_create_edge_, button_delete_edge_, button_delete_vertex_, button_save_;
     QLabel label_vertex_info_name_, label_vertex_num_adj_, label_vertex_info_num_edge_;
     QLineEdit edit_create_vertex_, edit_create_edge_1_, edit_create_edge_2_, edit_delete_vertex_, edit_delete_edge_1_, edit_delete_edge_2_;
     UDGraph graph_;
@@ -43,8 +43,7 @@ private:
         qDebug() << "draw!!!!!!!!!!" << n;
     }
     void ShowVertexInfo(VertexPosition pos){
-        Vertex &v = graph_.vertex_list_[pos];
-        label_vertex_info_name_.setText(v.name.c_str());
+        label_vertex_info_name_.setText(graph_[pos].c_str());
     }
     int InsertVertex(QString text){
         int ret = graph_.InsertVertex(text.toStdString());
@@ -53,7 +52,7 @@ private:
         }
 
         else{
-            GVertex *v = new GVertex(vertex_radius_,graph_.num_vertex_-1);
+            GVertex *v = new GVertex(vertex_radius_*2,graph_.num_vex()-1);
             vertex_list_.push_back(v);
 
             draw_scene_.addItem(v);
@@ -67,25 +66,26 @@ private:
         //Edge* ret = graph_.InsertEdge(name1.toStdString(),name2.toStdString());
         std::string s1 = name1.toStdString(), s2 = name2.toStdString();
 
-        int n = graph_.IsExistEdge(s1,s2);
-        if(n >= 0){
+        int n = graph_.IsExistEdge(s1,s2);qDebug() << "n1";
+        if(n == 0){qDebug() << "n2";
             graph_.InsertEdge(s1,s2);
             /*GVertex *gvertex_1 = graph_.vertex_list_[graph_.map_name_position_[s1]].draw_item;
             GVertex *gvertex_2 = graph_.vertex_list_[graph_.map_name_position_[s2]].draw_item;*/
-            GVertex *gvertex_1 = vertex_list_[graph_.map_name_position_[s1]];
-            GVertex *gvertex_2 = vertex_list_[graph_.map_name_position_[s2]];
-            if(n == 0){
+            GVertex *gvertex_1 = vertex_list_[graph_[s1]];
+            GVertex *gvertex_2 = vertex_list_[graph_[s2]];
+            if(n == 0){qDebug() << "n4";
                 GEdge *e = new GEdge(gvertex_1->pos().x(),gvertex_1->pos().y(),gvertex_2->pos().x(),gvertex_2->pos().y(),gvertex_1, gvertex_2);
                 draw_scene_.addItem(e);
                 gvertex_1->AddEdge(e);
                 gvertex_2->AddEdge(e);
+                qDebug() << "n6";
                 return 1;
-            }else{
-                GEdge *e = gvertex_1->GetEdge(gvertex_2);
-                e->AddRepeat();
+            }else{qDebug() << "n5";
+                /*GEdge *e = gvertex_1->GetEdge(gvertex_2);
+                e->AddRepeat();*/
                 return 2;
             }
-        }else{
+        }else{qDebug() << "n3";
             return 0;
         }
     }
@@ -93,26 +93,26 @@ private:
     int DeleteEdge(QString t1, QString t2){
         std::string name_1 = t1.toStdString(), name_2 = t2.toStdString();
 
-        if(graph_.IsExistEdge(name_1, name_2) > 0){
-            VertexPosition p1 = graph_.map_name_position_[name_1], p2 = graph_.map_name_position_[name_2];
+        if(graph_.IsExistEdge(name_1, name_2) > 0){qDebug() << "d1";
+            VertexPosition p1 = graph_[name_1], p2 = graph_[name_2];
             GVertex *gvertex_1 = vertex_list_[p1], *gvertex_2 = vertex_list_[p2];
 
             GEdge *e = gvertex_1->GetEdge(gvertex_2);
             int repeat = e->Repeat();
-            if(repeat == 1){
+            if(repeat == 1){qDebug() << "d3";
                 gvertex_1->RemoveEdge(e);
                 gvertex_2->RemoveEdge(e);
                 draw_scene_.removeItem(e);
                 delete e;
 
-            }else{
+            }else{qDebug() << "d4";
                 e->DesRepeat();
             }//qDebug() << e->Repeat() <<  "e repeat";
 
             graph_.DeleteEdge(name_1, name_2, 1);
             return 1;
 
-        }else{
+        }else{qDebug() << "d2";
             return 0;
         }
 
@@ -122,7 +122,7 @@ private:
 
         if(graph_.is_exist_vertex(name)){
 
-            VertexPosition pos = graph_.map_name_position_[name];
+            VertexPosition pos = graph_[name];
             GVertex *gvertex = vertex_list_[pos];
 
             gvertex->Destroy(&draw_scene_);
@@ -130,9 +130,21 @@ private:
 
             graph_.DeleteVertex(pos);
 
+
+            for(int i = 0; i < vertex_list_.size(); i++){
+                if(vertex_list_[i] == gvertex){
+                    vertex_list_.erase(vertex_list_.begin()+i);
+                }
+            }
+            if(gvertex != NULL)
             delete gvertex;
+
+            qDebug() << "DeleteVertex:  " << text << " exist";
             return 1;
+
+
         }else{
+            qDebug() << "DeleteVertex:  " << text << " is not exist";
             return 0;
         }
 
@@ -290,6 +302,16 @@ public:
             cur_vertex_y_ = 6;
         }
 
+        {
+            button_save_.setParent(this);
+            button_save_.resize(window_width_*0.026, window_height_*0.05);
+            button_save_.move(0,0);
+            button_save_.setText(tr("Save as TXT"));
+            button_save_.adjustSize();
+
+            connect(&button_save_, &QPushButton::clicked, this, &ClickSave);
+        }
+
         if(url != "new")
             ReadFile(url);
 
@@ -316,9 +338,13 @@ public:
             //graph_.InsertEdge(s1,s2);
             InsertEdge(s1.c_str(),s2.c_str());
         }
+        Tarjan();
     }
     void SaveAsFile(QString file_name){
         graph_.SaveAsFile(file_name.toStdString());
+    }
+    void ClickSave(){
+        SaveAsFile("mdzz.txt");
     }
 
 
@@ -370,7 +396,7 @@ public:
 
     void Tarjan(){
         DfsTarjan dfs(graph_);
-        for(int i = 0; i < graph_.num_vertex_; i++){
+        for(int i = 0; i < graph_.num_vex(); i++){
             vertex_list_[i]->SetCut(false);
             vertex_list_[i]->SetEdgeCut(false);
         }
@@ -381,6 +407,7 @@ public:
         std::vector<std::string> v1, v2;
         SplitString(cv, v1, ",");
         SplitString(ce, v2, ",");
+        qDebug() << cv.c_str() << "FFFFFFFFFFFFFF";
         qDebug() << ce.c_str() << "FFFFFFFFFFFFFF";
         for(int i = 0; i < v1.size(); i++){
             vertex_list_[stoi(v1[i])]->SetCut(true);
