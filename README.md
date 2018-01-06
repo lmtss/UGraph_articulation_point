@@ -24,13 +24,22 @@ README
 ## 风格约定
 代码的风格主要参考于 [Google 开源项目风格指南](http://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/naming/)
 #### 普通变量命名
+小写，下划线相连
+```c++
+int table_name;
+```
 #### 类内变量命名
 结尾接下划线, 其他与普通变量一样
 ```c++
 class ClassName{
 private:
-int table_name_;
-
+ int table_name_;
 };
 ```
-#### 函数命名
+#### 结构体变量命名
+与普通变量一样，结尾不接下划线
+```c++
+struct StructName{
+ int table_name;
+};
+```
