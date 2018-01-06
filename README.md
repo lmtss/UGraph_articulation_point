@@ -107,6 +107,44 @@ void Delete(VertexPosition position);
 #### GUI类依赖
 ![依赖图](img_for_readme/1GUI类.png)
 #### GUI类API
+```c++
+class GEdge{
+GVertex* vex1();
+GVertex* vex2();
+void ChangePos(GVertex* v, int x, int y);
+void SetCut(bool is);
+};
+```
+```c++
+class GVertex{
+void SetName(QString s);
+void SetCut(bool is);
+void AddEdge(GEdge *e);
+void Destroy(QGraphicsScene *scene);
+void RemoveEdge(GEdge *e);
+void DeleteEdge(GVertex *v2, QGraphicsScene *scene);
+GEdge *GetEdge(GVertex *v2);
+void SetEdgeCut(bool is);
+int VertexPos();
+};
+```
+```c++
+class StartWindow{
+void ClickScanFile();
+void ClickNewFile();
+};
+```
+```c++
+class MainWindow{
+void ReadFile(QString file_name);
+void SaveAsFile(QString file_name);
+void ClickSave();
+void ClickCreateVertex();
+void ClickCreateEdge();
+void ClickDeleteVertex();
+void ClickDeleteEdge();
+};
+```
 ## 分工
 |赵元琪|朱明昆|陈毅凯
 |---|---|---
