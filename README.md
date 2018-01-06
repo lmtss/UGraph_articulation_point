@@ -33,7 +33,8 @@ README
 ### GUI
 #### 外观设计
 外观设计主要使用demo设计软件Axure rp
-#### GUI类
+#### GUI类依赖
+![依赖图](img_for_readme/1GUI类.png)
 #### GUI类API
 ## 分工
 
