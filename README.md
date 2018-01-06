@@ -6,7 +6,7 @@ README
 
 |Author|赵xx|朱xx|陈xx
 |---|---|---|---
-|E-mail|1224306181@qq.com||
+|E-mail|1224306181@qq.com|810485796@qq.com|1595881193@qq.com
 
 ****
 
