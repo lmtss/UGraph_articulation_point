@@ -29,6 +29,7 @@ README
 ### 主要数据结构
 包括核心 邻接表&&tarjan 辅助 hash_map 线性表
 #### 类依赖
+![依赖图](img_for_readme/1类依赖.png)
 #### 类API
 ### GUI
 #### 外观设计
