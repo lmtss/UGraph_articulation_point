@@ -26,11 +26,11 @@ README
 #### 普通变量命名
 #### 类内变量命名
 结尾接下划线, 其他与普通变量一样
-///c++
+'''c++
 class ClassName{
 private:
 int table_name_;
 
 };
-///
+'''
 #### 函数命名
